@@ -1,4 +1,4 @@
-import Mastodon, { Instance } from 'megalodon'
+import { detector } from 'megalodon'
 import { Module, MutationTree, ActionTree } from 'vuex'
 import { RootState } from '@/store'
 import { MyWindow } from '~/src/types/global'
@@ -8,16 +8,19 @@ const win = window as MyWindow
 export type LoginState = {
   selectedInstance: string | null
   searching: boolean
+  sns: 'mastodon' | 'pleroma' | 'misskey'
 }
 
 const state = (): LoginState => ({
   selectedInstance: null,
-  searching: false
+  searching: false,
+  sns: 'mastodon'
 })
 
 export const MUTATION_TYPES = {
   CHANGE_INSTANCE: 'changeInstance',
-  CHANGE_SEARCHING: 'changeSearching'
+  CHANGE_SEARCHING: 'changeSearching',
+  CHANGE_SNS: 'changeSNS'
 }
 
 const mutations: MutationTree<LoginState> = {
@@ -26,13 +29,19 @@ const mutations: MutationTree<LoginState> = {
   },
   [MUTATION_TYPES.CHANGE_SEARCHING]: (state: LoginState, searching: boolean) => {
     state.searching = searching
+  },
+  [MUTATION_TYPES.CHANGE_SNS]: (state: LoginState, sns: 'mastodon' | 'pleroma' | 'misskey') => {
+    state.sns = sns
   }
 }
 
 const actions: ActionTree<LoginState, RootState> = {
-  fetchLogin: (_, instance: string) => {
+  fetchLogin: ({ state }) => {
     return new Promise((resolve, reject) => {
-      win.ipcRenderer.send('get-auth-url', instance)
+      win.ipcRenderer.send('get-auth-url', {
+        instance: state.selectedInstance,
+        sns: state.sns
+      })
       win.ipcRenderer.once('error-get-auth-url', (_, err: Error) => {
         win.ipcRenderer.removeAllListeners('response-get-auth-url')
         reject(err)
@@ -49,25 +58,10 @@ const actions: ActionTree<LoginState, RootState> = {
   confirmInstance: async ({ commit, rootState }, domain: string): Promise<boolean> => {
     commit(MUTATION_TYPES.CHANGE_SEARCHING, true)
     const cleanDomain = domain.trim()
-    try {
-      await Mastodon.get<Instance>('/api/v1/instance', {}, `https://${cleanDomain}`, rootState.App.proxyConfiguration)
-      commit(MUTATION_TYPES.CHANGE_SEARCHING, false)
-    } catch (err) {
-      // https://gist.github.com/okapies/60d62d0df0163bbfb4ab09c1766558e8
-      // Check /.well-known/host-meta to confirm mastodon instance.
-      const res = await Mastodon.get<any>('/.well-known/host-meta', {}, `https://${cleanDomain}`, rootState.App.proxyConfiguration).finally(
-        () => {
-          commit(MUTATION_TYPES.CHANGE_SEARCHING, false)
-        }
-      )
-      const parser = new DOMParser()
-      const dom = parser.parseFromString(res.data, 'text/xml')
-      const link = dom.getElementsByTagName('Link')[0].outerHTML
-      if (!link.includes(`https://${cleanDomain}/.well-known/webfinger`)) {
-        throw new Error('domain is not activity pub')
-      }
-    }
+    const sns = await detector(`https://${cleanDomain}`, rootState.App.proxyConfiguration)
+    commit(MUTATION_TYPES.CHANGE_SEARCHING, false)
     commit(MUTATION_TYPES.CHANGE_INSTANCE, cleanDomain)
+    commit(MUTATION_TYPES.CHANGE_SNS, sns)
     return true
   }
 }
