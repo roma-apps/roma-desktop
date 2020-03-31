@@ -47,7 +47,8 @@ export default {
   computed: {
     ...mapState({
       selectedInstance: state => state.Login.selectedInstance,
-      searching: state => state.Login.searching
+      searching: state => state.Login.searching,
+      sns: state => state.Login.sns
     }),
     allowLogin: function() {
       return this.selectedInstance && this.form.domainName === this.selectedInstance
@@ -80,11 +81,11 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
       this.$store
-        .dispatch('Login/fetchLogin', this.selectedInstance)
+        .dispatch('Login/fetchLogin')
         .then(url => {
           loading.close()
           this.$store.dispatch('Login/pageBack')
-          this.$router.push({ path: '/authorize', query: { url: url } })
+          this.$router.push({ path: '/authorize', query: { url: url, sns: this.sns } })
         })
         .catch(() => {
           loading.close()
