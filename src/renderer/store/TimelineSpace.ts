@@ -12,7 +12,7 @@ import { AccountLoadError } from '@/errors/load'
 import { TimelineFetchError } from '@/errors/fetch'
 import { MyWindow } from '~/src/types/global'
 
-const win = window as MyWindow
+const win = (window as any) as MyWindow
 
 export type TimelineSpaceState = {
   account: LocalAccount
@@ -102,6 +102,7 @@ const actions: ActionTree<TimelineSpaceState, RootState> = {
     await dispatch('detectSNS')
     dispatch('TimelineSpace/SideMenu/fetchLists', account, { root: true })
     dispatch('TimelineSpace/SideMenu/fetchFollowRequests', account, { root: true })
+    dispatch('TimelineSpace/SideMenu/confirmTimelines', account, { root: true })
     await dispatch('loadUnreadNotification', accountId)
     commit(MUTATION_TYPES.CHANGE_LOADING, false)
     await dispatch('fetchContentsTimelines').catch(_ => {
