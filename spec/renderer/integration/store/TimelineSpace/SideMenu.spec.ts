@@ -5,7 +5,7 @@ import { ipcMain, ipcRenderer } from '~/spec/mock/electron'
 import SideMenu, { SideMenuState } from '~/src/renderer/store/TimelineSpace/SideMenu'
 import { LocalTag } from '~/src/types/localTag'
 import { MyWindow } from '~/src/types/global'
-;(window as MyWindow).ipcRenderer = ipcRenderer
+;((window as any) as MyWindow).ipcRenderer = ipcRenderer
 
 const mockClient = {
   getLists: () => {
@@ -50,7 +50,18 @@ const state = (): SideMenuState => {
     unreadFollowRequests: false,
     lists: [],
     tags: [],
-    collapse: false
+    collapse: false,
+    enabledTimelines: {
+      home: true,
+      notification: true,
+      mention: true,
+      direct: true,
+      favourite: true,
+      local: true,
+      public: true,
+      tag: true,
+      list: true
+    }
   }
 }
 
