@@ -180,7 +180,8 @@
         "reply": "Notify me when I receive a reply",
         "reblog": "Notify me when I receive a reblog",
         "favourite": "Notify me when I receive a favourite",
-        "follow": "Notify me when I receive a follow"
+        "follow": "Notify me when I receive a follow",
+        "reaction": "Notify me when I receive a emoji reaction"
       }
     },
     "account": {
@@ -455,6 +456,10 @@
     "reblog": {
       "title": "Reblog",
       "body": "{{username}} boosted your status"
+    },
+    "reaction": {
+      "title": "Reaction",
+      "body": "{{username}} reacted your status"
     }
   }
 }
