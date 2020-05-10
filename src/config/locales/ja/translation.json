@@ -179,7 +179,8 @@
         "reply": "返信がある時",
         "reblog": "ブーストされた時",
         "favourite": "お気に入りされた時",
-        "follow": "フォローされた時"
+        "follow": "フォローされた時",
+        "reaction": "絵文字リアクションを受け取ったとき"
       }
     },
     "account": {
@@ -453,6 +454,10 @@
     "reblog": {
       "title": "ブースト",
       "body": "{{username}} さんにブーストされました"
+    },
+    "reaction": {
+      "title": "リアクション",
+      "body": "{{username}} さんがリアクションをつけました"
     }
   }
 }

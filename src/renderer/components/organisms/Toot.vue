@@ -39,7 +39,7 @@
       <div class="detail" v-on:dblclick="openDetail(message)">
         <div class="toot-header">
           <div class="user" @click="openUser(originalMessage.account)">
-            <span class="display-name" @click="openUser(message.account)"><bdi v-html="username(originalMessage.account)"></bdi></span>
+            <span class="display-name"><bdi v-html="username(originalMessage.account)"></bdi></span>
             <span class="acct">{{ accountName(originalMessage.account) }}</span>
           </div>
           <div class="timestamp">
@@ -103,7 +103,17 @@
             <bdi v-html="username(message.account)"></bdi>
           </span>
         </div>
-        <div class="tool-box">
+        <div class="emoji-reactions">
+          <template v-for="reaction in reactions">
+            <el-button v-if="reaction.me" type="success" size="medium" class="reaction" @click="removeReaction(reaction.name)"
+              >{{ reaction.name }} {{ reaction.count }}</el-button
+            >
+            <el-button v-else type="text" size="medium" class="reaction" @click="addReaction(reaction.name)"
+              >{{ reaction.name }} {{ reaction.count }}</el-button
+            >
+          </template>
+        </div>
+        <div class="tool-box" v-click-outside="hideEmojiPicker">
           <el-button type="text" @click="openReply()" class="reply" :title="$t('cards.toot.reply')" :aria-label="$t('cards.toot.reply')">
             <icon name="reply" scale="0.9"></icon>
           </el-button>
@@ -137,6 +147,23 @@
           <span class="count">
             {{ favouritesCount }}
           </span>
+          <template v-if="sns !== 'mastodon'">
+            <el-button class="emoji" type="text" @click="toggleEmojiPicker">
+              <icon name="regular/smile" scale="0.9"></icon>
+            </el-button>
+            <div v-if="openEmojiPicker" class="emoji-picker">
+              <picker
+                set="emojione"
+                :autoFocus="true"
+                @select="selectEmoji"
+                :sheetSize="32"
+                :perLine="7"
+                :emojiSize="24"
+                :showPreview="false"
+                :emojiTooltip="true"
+              />
+            </div>
+          </template>
           <el-button class="pinned" type="text" :title="$t('cards.toot.pinned')" :aria-label="$t('cards.toot.pinned')" v-show="pinned">
             <icon name="thumbtack" scale="0.9"></icon>
           </el-button>
@@ -184,6 +211,8 @@
 <script>
 import moment from 'moment'
 import { mapState } from 'vuex'
+import { Picker } from 'emoji-mart-vue'
+import ClickOutside from 'vue-click-outside'
 import { findAccount, findLink, findTag } from '~/src/renderer/utils/tootParser'
 import DisplayStyle from '~/src/constants/displayStyle'
 import TimeFormat from '~/src/constants/timeFormat'
@@ -194,9 +223,13 @@ import { setInterval, clearInterval } from 'timers'
 
 export default {
   name: 'toot',
+  directives: {
+    ClickOutside
+  },
   components: {
     FailoverImg,
-    Poll
+    Poll,
+    Picker
   },
   data() {
     return {
@@ -204,7 +237,9 @@ export default {
       showAttachments: this.$store.state.App.ignoreNFSW,
       hideAllAttachments: this.$store.state.App.hideAllAttachments,
       now: Date.now(),
-      pollResponse: null
+      pollResponse: null,
+      openEmojiPicker: false,
+      reactionResponse: null
     }
   },
   props: {
@@ -239,74 +274,84 @@ export default {
       timeFormat: state => state.timeFormat,
       language: state => state.language
     }),
-    shortcutEnabled: function() {
-      return this.focused && !this.overlaid
+    ...mapState('TimelineSpace', {
+      sns: state => state.sns
+    }),
+    shortcutEnabled: function () {
+      return this.focused && !this.overlaid && !this.openEmojiPicker
     },
-    timestamp: function() {
+    timestamp: function () {
       return this.parseDatetime(this.originalMessage.created_at, this.now)
     },
-    readableTimestamp: function() {
+    readableTimestamp: function () {
       moment.locale(this.language)
       return moment(this.originalMessage.created_at).format('LLLL')
     },
-    originalMessage: function() {
+    originalMessage: function () {
       if (this.message.reblog !== null) {
         return this.message.reblog
       } else {
         return this.message
       }
     },
-    mediaAttachments: function() {
+    mediaAttachments: function () {
       return this.originalMessage.media_attachments
     },
-    reblogsCount: function() {
+    reblogsCount: function () {
       if (this.originalMessage.reblogs_count > 0) {
         return this.originalMessage.reblogs_count
       }
       return ''
     },
-    favouritesCount: function() {
+    favouritesCount: function () {
       if (this.originalMessage.favourites_count > 0) {
         return this.originalMessage.favourites_count
       }
       return ''
     },
-    isMyMessage: function() {
+    isMyMessage: function () {
       return this.$store.state.TimelineSpace.account.accountId === this.originalMessage.account.id
     },
-    application: function() {
+    application: function () {
       let msg = this.originalMessage
       if (msg.application !== undefined && msg.application !== null) {
         return msg.application.name
       }
       return null
     },
-    spoilered: function() {
+    spoilered: function () {
       return this.originalMessage.spoiler_text.length > 0
     },
-    isShowContent: function() {
+    isShowContent: function () {
       return !this.spoilered || this.showContent
     },
-    poll: function() {
+    poll: function () {
       if (this.pollResponse) {
         return this.pollResponse
       } else {
         return this.originalMessage.poll
       }
     },
-    sensitive: function() {
+    reactions: function () {
+      if (this.reactionResponse) {
+        return this.reactionResponse
+      } else {
+        return this.originalMessage.emoji_reactions
+      }
+    },
+    sensitive: function () {
       return (this.hideAllAttachments || this.originalMessage.sensitive) && this.mediaAttachments.length > 0
     },
-    isShowAttachments: function() {
+    isShowAttachments: function () {
       return !this.sensitive || this.showAttachments
     },
-    filtered: function() {
+    filtered: function () {
       return this.filter.length > 0 && this.originalMessage.content.search(this.filter) >= 0
     },
-    locked: function() {
+    locked: function () {
       return this.message.visibility === 'private'
     },
-    directed: function() {
+    directed: function () {
       return this.message.visibility === 'direct'
     }
   },
@@ -322,13 +367,13 @@ export default {
     clearInterval(this.updateInterval)
   },
   watch: {
-    focused: function(newState, oldState) {
+    focused: function (newState, oldState) {
       if (newState) {
-        this.$nextTick(function() {
+        this.$nextTick(function () {
           this.$refs.status.focus()
         })
       } else if (oldState && !newState) {
-        this.$nextTick(function() {
+        this.$nextTick(function () {
           this.$refs.status.blur()
         })
       }
@@ -504,6 +549,7 @@ export default {
       })
     },
     openUser(account) {
+      console.log(account)
       this.$store.dispatch('TimelineSpace/Contents/SideBar/openAccountComponent')
       this.$store.dispatch('TimelineSpace/Contents/SideBar/AccountProfile/changeAccount', account)
       this.$store.commit('TimelineSpace/Contents/SideBar/changeOpenSideBar', true)
@@ -581,6 +627,34 @@ export default {
     async refresh(id) {
       const res = await this.$store.dispatch('organisms/Toot/refresh', id)
       this.pollResponse = res
+    },
+    toggleEmojiPicker() {
+      this.openEmojiPicker = !this.openEmojiPicker
+    },
+    hideEmojiPicker() {
+      this.openEmojiPicker = false
+    },
+    async selectEmoji(emoji) {
+      const res = await this.$store.dispatch('organisms/Toot/sendReaction', {
+        status_id: this.originalMessage.id,
+        native: emoji.native
+      })
+      this.reactionResponse = res
+      this.hideEmojiPicker()
+    },
+    async addReaction(native) {
+      const res = await this.$store.dispatch('organisms/Toot/sendReaction', {
+        status_id: this.originalMessage.id,
+        native: native
+      })
+      this.reactionResponse = res
+    },
+    async removeReaction(native) {
+      const res = await this.$store.dispatch('organisms/Toot/deleteReaction', {
+        status_id: this.originalMessage.id,
+        native: native
+      })
+      this.reactionResponse = res
     }
   }
 }
@@ -593,6 +667,7 @@ export default {
 
 .toot {
   padding: 8px 0 0 16px;
+  position: relative;
 
   .fa-icon {
     font-size: 0.9em;
@@ -754,6 +829,12 @@ export default {
       }
     }
 
+    .emoji-reactions {
+      .reaction {
+        padding: 10px 8px;
+      }
+    }
+
     .tool-box {
       float: left;
 
@@ -832,6 +913,12 @@ export default {
 
   .action-pop-over {
     color: #303133;
+  }
+
+  .emoji-picker {
+    position: absolute;
+    margin-top: 4px;
+    z-index: 10;
   }
 }
 

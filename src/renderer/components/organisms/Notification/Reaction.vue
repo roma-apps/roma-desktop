@@ -7,19 +7,19 @@
     ref="status"
     @click="$emit('select')"
     role="article"
-    aria-label="reblogged toot"
+    aria-label="reacted toot"
   >
     <div v-show="filtered(message)" class="filtered">
       Filtered
     </div>
-    <div v-show="!filtered(message)" class="reblog">
+    <div v-show="!filtered(message)" class="favourite">
       <div class="action">
         <div class="action-mark">
-          <icon name="retweet" scala="0.7"></icon>
+          {{ message.emoji }}
         </div>
         <div class="action-detail">
           <span class="bold" @click="openUser(message.account)"><bdi v-html="username(message.account)"></bdi></span
-          >{{ $t('notification.reblog.body') }}
+          >{{ $t('notification.reaction.body') }}
         </div>
         <div class="action-icon" role="presentation">
           <FailoverImg :src="message.account.avatar" :alt="`Avatar of ${message.account.username}`" />
@@ -27,15 +27,13 @@
       </div>
       <div class="clearfix"></div>
       <div class="target" v-on:dblclick="openDetail(message.status)">
-        <div class="icon" @click="openUser(message.status.account)" role="presentation">
-          <FailoverImg :src="message.status.account.avatar" :alt="`Avatar of ${message.status.account.username}`" />
+        <div class="icon" @click="openUser(message.status.account)">
+          <FailoverImg :src="message.status.account.avatar" :alt="`Avatar of ${message.status.account.username}`" role="presentation" />
         </div>
         <div class="detail">
           <div class="toot-header">
-            <div class="user">
-              <span class="display-name">
-                <bdi v-html="username(message.status.account)"></bdi>
-              </span>
+            <div class="user" @click="openUser(message.status.account)">
+              <span class="display-name"><bdi v-html="username(message.status.account)"></bdi></span>
             </div>
             <div class="timestamp">
               {{ parseDatetime(message.status.created_at) }}
@@ -110,7 +108,7 @@ import TimeFormat from '~/src/constants/timeFormat'
 import FailoverImg from '~/src/renderer/components/atoms/FailoverImg'
 
 export default {
-  name: 'reblog',
+  name: 'reaction',
   components: {
     FailoverImg
   },
@@ -140,6 +138,7 @@ export default {
   },
   computed: {
     ...mapState({
+      displayNameStyle: state => state.App.displayNameStyle,
       timeFormat: state => state.App.timeFormat,
       language: state => state.App.language
     }),
@@ -183,13 +182,13 @@ export default {
       }
     },
     tootClick(e) {
-      const parsedTag = findTag(e.target, 'reblog')
+      const parsedTag = findTag(e.target, 'favourite')
       if (parsedTag !== null) {
         const tag = `/${this.$route.params.id}/hashtag/${parsedTag}`
         this.$router.push({ path: tag })
         return tag
       }
-      const parsedAccount = findAccount(e.target, 'reblog')
+      const parsedAccount = findAccount(e.target, 'favourite')
       if (parsedAccount !== null) {
         this.$store.commit('TimelineSpace/Contents/SideBar/changeOpenSideBar', true)
         this.$store
@@ -198,16 +197,17 @@ export default {
             this.$store.dispatch('TimelineSpace/Contents/SideBar/openAccountComponent')
             this.$store.dispatch('TimelineSpace/Contents/SideBar/AccountProfile/changeAccount', account)
           })
-          .catch(() => {
+          .catch(err => {
+            console.error(err)
             this.openLink(e)
             this.$store.commit('TimelineSpace/Contents/SideBar/changeOpenSideBar', false)
           })
-        return parsedAccount
+        return parsedAccount.acct
       }
       this.openLink(e)
     },
     openLink(e) {
-      const link = findLink(e.target, 'reblog')
+      const link = findLink(e.target, 'favourite')
       if (link !== null) {
         return window.shell.openExternal(link)
       }
@@ -277,7 +277,7 @@ export default {
   font-weight: bold;
 }
 
-.reblog {
+.favourite {
   padding: 8px 0 0 16px;
 
   .fa-icon {
@@ -292,7 +292,7 @@ export default {
     margin-right: 8px;
 
     .action-mark {
-      color: #409eff;
+      color: #e6a23c;
       float: left;
       width: 32px;
       text-align: right;
@@ -352,6 +352,10 @@ export default {
           word-wrap: break-word;
         }
 
+        .content p {
+          unicode-bidi: plaintext;
+        }
+
         .emojione {
           width: 20px;
           height: 20px;
@@ -359,11 +363,12 @@ export default {
       }
 
       .toot-header {
-        height: 24px;
+        height: 22px;
 
         .user {
           float: left;
           font-size: var(--base-font-size);
+          cursor: pointer;
 
           .display-name /deep/ {
             .emojione {
