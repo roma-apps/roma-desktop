@@ -21,7 +21,7 @@
     "
     @shortkey="handleTootControl"
     ref="status"
-    @click="$emit('selectToot')"
+    @click="$emit('selectToot', message)"
     role="article"
     aria-label="toot"
   >
@@ -89,7 +89,22 @@
           </div>
           <div class="clearfix"></div>
         </div>
-        <div class="reblogger" v-show="message.reblog !== null">
+        <Quote
+          v-if="message.quote"
+          :icon="message.reblog.account.avatar"
+          :username="username(message.reblog.account)"
+          :accountName="accountName(message.reblog.account)"
+          :body="message.reblog.content"
+          @select="openDetail(message.reblog)"
+        />
+        <LinkPreview
+          v-if="originalMessage.card && originalMessage.card.type === 'link'"
+          :icon="originalMessage.card.image"
+          :title="originalMessage.card.title"
+          :description="originalMessage.card.description"
+          :url="originalMessage.card.url"
+        />
+        <div class="reblogger" v-show="message.reblog && !message.quote">
           <icon name="retweet"></icon>
           <span class="reblogger-icon" @click="openUser(message.account)" role="presentation">
             <FailoverImg :src="message.account.avatar" :alt="`Avatar of ${message.account.username}`" />
@@ -104,7 +119,7 @@
           </span>
         </div>
         <div class="emoji-reactions">
-          <template v-for="reaction in reactions">
+          <template v-for="reaction in originalMessage.emoji_reactions">
             <el-button v-if="reaction.me" type="success" size="medium" class="reaction" @click="removeReaction(reaction.name)"
               >{{ reaction.name }} {{ reaction.count }}</el-button
             >
@@ -219,6 +234,8 @@ import TimeFormat from '~/src/constants/timeFormat'
 import emojify from '~/src/renderer/utils/emojify'
 import FailoverImg from '~/src/renderer/components/atoms/FailoverImg'
 import Poll from '~/src/renderer/components/molecules/Toot/Poll'
+import LinkPreview from '~/src/renderer/components/molecules/Toot/LinkPreview'
+import Quote from '@/components/molecules/Toot/Quote'
 import { setInterval, clearInterval } from 'timers'
 
 export default {
@@ -229,7 +246,9 @@ export default {
   components: {
     FailoverImg,
     Poll,
-    Picker
+    Picker,
+    LinkPreview,
+    Quote
   },
   data() {
     return {
@@ -238,8 +257,7 @@ export default {
       hideAllAttachments: this.$store.state.App.hideAllAttachments,
       now: Date.now(),
       pollResponse: null,
-      openEmojiPicker: false,
-      reactionResponse: null
+      openEmojiPicker: false
     }
   },
   props: {
@@ -288,7 +306,7 @@ export default {
       return moment(this.originalMessage.created_at).format('LLLL')
     },
     originalMessage: function () {
-      if (this.message.reblog !== null) {
+      if (this.message.reblog && !this.message.quote) {
         return this.message.reblog
       } else {
         return this.message
@@ -313,7 +331,7 @@ export default {
       return this.$store.state.TimelineSpace.account.accountId === this.originalMessage.account.id
     },
     application: function () {
-      let msg = this.originalMessage
+      const msg = this.originalMessage
       if (msg.application !== undefined && msg.application !== null) {
         return msg.application.name
       }
@@ -330,13 +348,6 @@ export default {
         return this.pollResponse
       } else {
         return this.originalMessage.poll
-      }
-    },
-    reactions: function () {
-      if (this.reactionResponse) {
-        return this.reactionResponse
-      } else {
-        return this.originalMessage.emoji_reactions
       }
     },
     sensitive: function () {
@@ -604,13 +615,14 @@ export default {
         case 'profile':
           this.openUser(this.originalMessage.account)
           break
-        case 'image':
+        case 'image': {
           const images = this.mediaAttachments
           if (images.length === 0) {
             return 0
           }
           this.openImage(images[0].url, images)
           break
+        }
         case 'cw':
           this.showContent = !this.showContent
           this.showAttachments = !this.showAttachments
@@ -635,26 +647,26 @@ export default {
       this.openEmojiPicker = false
     },
     async selectEmoji(emoji) {
-      const res = await this.$store.dispatch('organisms/Toot/sendReaction', {
+      const status = await this.$store.dispatch('organisms/Toot/sendReaction', {
         status_id: this.originalMessage.id,
         native: emoji.native
       })
-      this.reactionResponse = res
+      this.$emit('update', status)
       this.hideEmojiPicker()
     },
     async addReaction(native) {
-      const res = await this.$store.dispatch('organisms/Toot/sendReaction', {
+      const status = await this.$store.dispatch('organisms/Toot/sendReaction', {
         status_id: this.originalMessage.id,
         native: native
       })
-      this.reactionResponse = res
+      this.$emit('update', status)
     },
     async removeReaction(native) {
-      const res = await this.$store.dispatch('organisms/Toot/deleteReaction', {
+      const status = await this.$store.dispatch('organisms/Toot/deleteReaction', {
         status_id: this.originalMessage.id,
         native: native
       })
-      this.reactionResponse = res
+      this.$emit('update', status)
     }
   }
 }
@@ -701,6 +713,10 @@ export default {
       .content {
         margin: var(--toot-padding) 0;
         word-wrap: break-word;
+
+        pre {
+          white-space: pre-wrap;
+        }
       }
 
       .content p {

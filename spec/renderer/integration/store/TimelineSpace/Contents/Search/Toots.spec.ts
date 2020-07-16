@@ -79,10 +79,11 @@ const status: Entity.Status = {
   } as Entity.Application,
   language: null,
   pinned: null,
-  emoji_reactions: []
+  emoji_reactions: [],
+  quote: false
 }
 
-let state = (): TootsState => {
+const state = (): TootsState => {
   return {
     results: []
   }
