@@ -180,6 +180,7 @@
         "reblog": "Notify me when I receive a reblog",
         "favourite": "Notify me when I receive a favourite",
         "follow": "Notify me when I receive a follow",
+        "follow_request": "Notify me when I receive a follow request",
         "reaction": "Notify me when I receive a emoji reaction"
       }
     },
@@ -451,9 +452,17 @@
       "title": "Follow",
       "body": "{{username}} is now following you"
     },
+    "follow_request": {
+      "title": "FollowRequest",
+      "body": "Receive a follow request from {{username}}"
+    },
     "reblog": {
       "title": "Reblog",
       "body": "{{username}} boosted your status"
+    },
+    "quote": {
+      "title": "Quote",
+      "body": "{{username}} quoted your status"
     },
     "reaction": {
       "title": "Reaction",
