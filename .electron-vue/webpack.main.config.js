@@ -60,13 +60,17 @@ let mainConfig = {
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../src/config/locales'),
-        to: path.join(__dirname, '../dist/electron/locales'),
-        ignore: ['.*', '*~']
-      }
-    ])
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../src/config/locales'),
+          to: path.join(__dirname, '../dist/electron/locales'),
+          globOptions: {
+            ignore: ['.*', '*~']
+          }
+        }
+      ]
+    })
   ],
   resolve: {
     alias: {
