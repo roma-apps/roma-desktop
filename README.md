@@ -45,7 +45,6 @@ Roma is a mastodon client for desktop application.
 You can download `.dmg` from [release page](https://github.com/roma-apps/roma-desktop/releases).
 
 ### Linux
-
 You can download `.deb` or `.rpm` from [release page](https://github.com/roma-apps/roma-desktop/releases).
 If you do not want to use the package manager, please download `.tar.bz2` file and decompress it.
 
