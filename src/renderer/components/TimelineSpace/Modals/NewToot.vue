@@ -2,6 +2,7 @@
   <el-dialog
     :title="$t('modals.new_toot.title')"
     :visible.sync="newTootModal"
+    v-if="newTootModal"
     :before-close="closeConfirm"
     width="600px"
     class="new-toot-modal"
@@ -239,7 +240,9 @@ export default {
   },
   mounted() {
     Event.$on('image-uploaded', () => {
-      this.statusHeight = this.statusHeight - this.$refs.preview.offsetHeight
+      if (this.$refs.preview) {
+        this.statusHeight = this.statusHeight - this.$refs.preview.offsetHeight
+      }
     })
   },
   watch: {
@@ -254,12 +257,22 @@ export default {
   methods: {
     close() {
       this.filteredAccount = []
+      const spoilerHeight = this.$refs.spoiler ? this.$refs.spoiler.offsetHeight : 0
+      this.showContentWarning = false
+      this.spoiler = ''
+      this.statusHeight = this.statusHeight + spoilerHeight
+      const pollHeight = this.$refs.poll ? this.$refs.poll.$el.offsetHeight : 0
       this.openPoll = false
       this.polls = []
       this.pollExpire = {
         label: this.$t('modals.new_toot.poll.expires.1_day'),
         value: 3600 * 24
       }
+      this.statusHeight = this.statusHeight + pollHeight
+      const quoteHeight = this.$refs.quote ? this.$refs.quote.$el.offsetHeight : 0
+      this.statusHeight = this.statusHeight + quoteHeight
+      const attachmentHeight = this.$refs.preview ? this.$refs.preview.offsetHeight : 0
+      this.statusHeight = this.statusHeight + attachmentHeight
       this.$store.dispatch('TimelineSpace/Modals/NewToot/resetMediaCount')
       this.$store.dispatch('TimelineSpace/Modals/NewToot/closeModal')
     },
@@ -460,7 +473,7 @@ export default {
 <style lang="scss" scoped>
 .new-toot-modal /deep/ {
   .el-dialog {
-    background-color: #f2f6fc;
+    background-color: var(--theme-selected-background-color);
     overflow: hidden;
     resize: both;
     padding-bottom: 20px;
@@ -478,6 +491,12 @@ export default {
 
   .el-dialog__body {
     padding: 0;
+
+    .el-input__inner {
+      background-color: var(--theme-background-color);
+      color: var(--theme-primary-color);
+      border: 1px solid var(--theme-border-color);
+    }
 
     .spoiler {
       box-sizing: border-box;
@@ -556,7 +575,7 @@ export default {
   }
 
   .el-dialog__footer {
-    background-color: #f2f6fc;
+    background-color: var(--theme-selected-background-color);
     font-size: var(--base-font-size);
     padding-bottom: 0;
 
