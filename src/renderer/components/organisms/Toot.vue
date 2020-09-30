@@ -167,6 +167,19 @@
           <span class="count">
             {{ favouritesCount }}
           </span>
+          <el-button
+            @click="changeBookmark(originalMessage)"
+            :class="originalMessage.bookmarked ? 'bookmarked' : 'bookmark'"
+            type="text"
+            :text="$t('cards.toot.bookmark')"
+            :aria-label="$t('cards.toot.bookmark')"
+            v-if="bookmarkSupported"
+          >
+            <icon name="bookmark" scale="0.9"></icon>
+          </el-button>
+          <el-button type="text" class="quote-btn" v-if="quoteSupported" @click="openQuote()">
+            <icon name="quote-right" scale="0.9"></icon>
+          </el-button>
           <template v-if="sns !== 'mastodon'">
             <el-button class="emoji" type="text" @click="toggleEmojiPicker">
               <icon name="regular/smile" scale="0.9"></icon>
@@ -242,6 +255,7 @@ import Poll from '~/src/renderer/components/molecules/Toot/Poll'
 import LinkPreview from '~/src/renderer/components/molecules/Toot/LinkPreview'
 import Quote from '@/components/molecules/Toot/Quote'
 import { setInterval, clearInterval } from 'timers'
+import QuoteSupported from '@/utils/quoteSupported'
 
 export default {
   name: 'toot',
@@ -298,7 +312,11 @@ export default {
       language: state => state.language
     }),
     ...mapState('TimelineSpace', {
-      sns: state => state.sns
+      sns: state => state.sns,
+      account: state => state.account
+    }),
+    ...mapState('TimelineSpace/SideMenu', {
+      bookmarkSupported: state => state.enabledTimelines.bookmark
     }),
     shortcutEnabled: function () {
       return this.focused && !this.overlaid && !this.openEmojiPicker
@@ -369,6 +387,9 @@ export default {
     },
     directed: function () {
       return this.message.visibility === 'direct'
+    },
+    quoteSupported: function () {
+      return QuoteSupported(this.sns, this.account.domain)
     }
   },
   mounted() {
@@ -554,6 +575,35 @@ export default {
           })
       }
     },
+    changeBookmark(message) {
+      if (message.bookmarked) {
+        this.$store
+          .dispatch('organisms/Toot/removeBookmark', message)
+          .then(data => {
+            this.$emit('update', data)
+          })
+          .catch(err => {
+            console.error(err)
+            this.$message({
+              message: this.$t('message.unbookmark_error'),
+              type: 'error'
+            })
+          })
+      } else {
+        this.$store
+          .dispatch('organisms/Toot/addBookmark', message)
+          .then(data => {
+            this.$emit('update', data)
+          })
+          .catch(err => {
+            console.error(err)
+            this.$message({
+              message: this.$t('message.bookmark_error'),
+              type: 'error'
+            })
+          })
+      }
+    },
     openImage(url, rawMediaList) {
       const mediaList = rawMediaList.map(media => {
         return media.url
@@ -667,6 +717,9 @@ export default {
         native: native
       })
       this.$emit('update', status)
+    },
+    openQuote() {
+      this.$store.dispatch('TimelineSpace/Modals/NewToot/openQuote', this.originalMessage)
     }
   }
 }
@@ -883,6 +936,15 @@ export default {
         font-size: 0.8em;
         color: #909399;
         margin: 0 0 4px -8px;
+      }
+
+      .bookmark {
+        margin: 0 0 0 8px;
+      }
+
+      .bookmarked {
+        margin: 0 0 0 8px;
+        color: #ff5050;
       }
 
       .pinned {
