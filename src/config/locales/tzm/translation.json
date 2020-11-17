@@ -1,0 +1,477 @@
+{
+  "main_menu": {
+    "application": {
+      "name": "Whalebird",
+      "about": "Γef Whalebird",
+      "preferences": "Isemnyifen...",
+      "services": "Tinufa",
+      "hide": "Ffer Whalebird",
+      "hide_others": "Ffer Wayyaḍ",
+      "show_all": "Smal Maṛṛa",
+      "open": "Ṛẓem Asatem",
+      "quit": "Ffeɣ"
+    },
+    "toot": {
+      "name": "Ansaɣ",
+      "new": "Ansaɣ Amaynu"
+    },
+    "edit": {
+      "name": "Senfel",
+      "undo": "Sser",
+      "redo": "Ales",
+      "cut": "Bbi",
+      "copy": "Senɣel",
+      "paste": "Sleɣ",
+      "select_all": "Sty maṛṛa"
+    },
+    "view": {
+      "name": "Smal",
+      "toggle_full_screen": "Toggle Full Screen"
+    },
+    "window": {
+      "always_show_menu_bar": "Smal awerra n waddad abda",
+      "name": "Asatem",
+      "close": "Rgel Asatem",
+      "open": "Ṛẓem Asatem",
+      "minimize": "Semẓi",
+      "jump_to": "Ddu ɣer"
+    }
+  },
+  "global_header": {
+    "add_new_account": "Rnu yan umiḍan amaynu"
+  },
+  "side_menu": {
+    "profile": "Ifres",
+    "show_profile": "Sken ifres",
+    "edit_profile": "Senfel ifres",
+    "settings": "Tisɣal",
+    "collapse": "Smun",
+    "expand": "Expand",
+    "home": "Asenubeg",
+    "notification": "Tineɣmisin",
+    "mention": "Mention",
+    "direct": "Tuzinin tusridin",
+    "follow_requests": "Ḍfeṛ tutrawin",
+    "favourite": "Tismal",
+    "bookmark": "Asɣal",
+    "local": "Ifili n uzmez adɣran",
+    "public": "Ifili n uzmez agdudan",
+    "hashtag": "Hacṭag",
+    "search": "Rzu",
+    "lists": "Isedditen"
+  },
+  "header_menu": {
+    "home": "Asenubeg",
+    "notification": "Tineɣmisin",
+    "mention": "Mention",
+    "favourite": "Tismal",
+    "bookmark": "Asɣal",
+    "follow_requests": "Tutrawin n uḍfaṛ",
+    "direct_messages": "Tuzinin Tusridin",
+    "local": "Ifili n uzmez adɣran",
+    "public": "Ifili n uzmez agdudan",
+    "hashtag": "Hacṭag",
+    "search": "Rzu",
+    "lists": "Isedditen",
+    "members": "Agmamen",
+    "filter": {
+      "title": "Sty",
+      "placeholder": "Filter out by regular expressions",
+      "show_dms": "Smal tuzinin tusridin",
+      "show_reblogs": "Show reblogs",
+      "show_replies": "Smal iratiten",
+      "apply": "Seɣzen"
+    },
+    "new_toot": "Ansaɣ",
+    "reload": "Ales",
+    "settings": "Tisɣal"
+  },
+  "settings": {
+    "title": "Tisɣal",
+    "general": {
+      "title": "Amatay",
+      "toot": {
+        "title": "Ansaɣ",
+        "visibility": {
+          "description": "Customize default visibility of toot.",
+          "public": "Agdudan",
+          "unlisted": "Unlisted",
+          "private": "Uslig",
+          "direct": "Usrid"
+        },
+        "sensitive": {
+          "description": "Mark media as sensitive by default"
+        }
+      }
+    },
+    "timeline": {
+      "title": "Ifili n uzmez",
+      "unread_notification": {
+        "title": "Tineɣmisin ur ittuɣrin",
+        "description": "Customize unread notifications for each timeline.",
+        "direct": "Tuzinin tusridin",
+        "local": "Ifili n uzmez adɣran",
+        "public": "Ifili n uzmez agdudan"
+      }
+    }
+  },
+  "preferences": {
+    "title": "Isemnyifen",
+    "general": {
+      "title": "Amatay",
+      "sounds": {
+        "title": "Imsliten",
+        "description": "Imesli n tneɣmisin.",
+        "fav_rb": "When you favorite or boost the toot",
+        "toot": "Adday tfserd yan n unsaɣ"
+      },
+      "timeline": {
+        "title": "Ifili n uzmez",
+        "description": "Customize view in your timelines.",
+        "cw": "Always ignore contents warnings",
+        "nfsw": "Nxxel abda tumayin n NFSW",
+        "hideAllAttachments": "Ffer isenɣmisen maṛṛa"
+      },
+      "other": {
+        "title": "Tideɣrin yaḍnin",
+        "launch": "Ṛẓem tisensi akd ukcam"
+      }
+    },
+    "appearance": {
+      "title": "Appearance",
+      "theme_color": "Aklu n usgum",
+      "theme": {
+        "light": "Anafaw",
+        "dark": "Adɣmum",
+        "solarized_light": "SolarizedLight",
+        "solarized_dark": "SolarizedDark",
+        "kimbie_dark": "KimbieDark",
+        "custom": "Custom"
+      },
+      "custom_theme": {
+        "background_color": "Agilal n tsila",
+        "selected_background_color": "Agilal asmssi",
+        "global_header_color": "Talgamt n umiḍan",
+        "side_menu_color": "Umuɣ n tama",
+        "primary_color": "Aklu n uḍṛiṣ amenzu",
+        "regular_color": "Aklu n uḍṛiṣ anaway",
+        "secondary_color": "Aklu n uḍṛiṣ asinan",
+        "border_color": "Imisi",
+        "header_menu_color": "Umuɣ n waflla",
+        "wrapper_mask_color": "Modal wrapper"
+      },
+      "font_size": "Tiɣzi n tuniɣt",
+      "font_family": "Tawacunt n tuniɣt",
+      "toot_padding": "Asemɣeṛ n tuzint",
+      "display_style": {
+        "title": "Smal tamamkt n Isem n unessmres",
+        "display_name_and_username": "Smal isem d Isem n unessmres",
+        "display_name": "Smal isem",
+        "username": "Isem n unessmres"
+      },
+      "time_format": {
+        "title": "Talɣa n wakud",
+        "absolute": "Absolute",
+        "relative": "Amaqqan"
+      }
+    },
+    "notification": {
+      "title": "Tineɣmist",
+      "enable": {
+        "description": "Tisɣal n tneɣmisin.",
+        "reply": "Laɣa-d adday-d yawḍ yan urari",
+        "reblog": "Notify me when I receive a reblog",
+        "favourite": "Notify me when I receive a favourite",
+        "follow": "Notify me when I receive a follow",
+        "reaction": "Laɣa-d adday-d yawḍ yan umyagga"
+      }
+    },
+    "account": {
+      "title": "Amiḍan",
+      "connected": "Ittuzdy Umiḍan",
+      "username": "Isem n unessmres",
+      "domain": "Iger",
+      "association": "Tamesmunt",
+      "order": "Yaḍen",
+      "remove_association": "Kkes tamesmunt",
+      "remove_all_associations": "Kkes timesmunin maṛṛa",
+      "confirm": "Seddid",
+      "cancel": "Sser",
+      "confirm_message": "Is nit txsed ad tKkesd timesmunin maṛṛa?"
+    },
+    "network": {
+      "title": "Aẓeṭṭa",
+      "proxy": {
+        "title": "Tisɣal n upṛuksi",
+        "no": "Walu apṛuksy",
+        "system": "Semres apṛuksy n ungraw",
+        "manual": "Manual proxy configuration",
+        "protocol": "Apṛutukul",
+        "host": "Proxy host",
+        "port": "Proxy port",
+        "username": "Isem n unessmres n upruksi",
+        "password": "Taguri n uzeray n upṛuksi",
+        "protocol_list": {
+          "http": "http",
+          "https": "https",
+          "socks4": "socks4",
+          "socks4a": "socks4a",
+          "socks5": "socks5",
+          "socks5h": "socks5h"
+        }
+      },
+      "save": "Ḥḍu"
+    },
+    "language": {
+      "title": "Tutlayt",
+      "language_description": "Dɣer tutlayt nna txsed ad-sis tssmrsed Whalebird.",
+      "notice": "Issutur allas usenti",
+      "confirm": {
+        "title": "Warning",
+        "message": "Ixṣ as talsed tsentid tisensi-a. ad tsmded?",
+        "ok": "Als-senti dɣi",
+        "cancel": "Ser"
+      }
+    }
+  },
+  "modals": {
+    "new_toot": {
+      "title": "Ansaɣ Amaynu",
+      "cw": "Ara aɣatal-nnek da",
+      "status": "Ma'yd illan g ixef-nnek?",
+      "cancel": "Sser",
+      "toot": "Ansaɣ",
+      "close_confirm": "Is nit txsed ad tssred Ansaɣ Amaynu?",
+      "close_confirm_ok": "WAX",
+      "close_confirm_cancel": "Sser",
+      "description": "Describe for the visually impaired",
+      "footer": {
+        "add_image": "Rnu yat n twlafet",
+        "poll": "Rnu yan n idew",
+        "change_visibility": "Change visibility",
+        "change_sensitive": "Change sensitive",
+        "add_cw": "Add content warning",
+        "pined_hashtag": "Agel ahacṭag"
+      },
+      "poll": {
+        "add_choice": "Rnu yan n ustay",
+        "expires": {
+          "5_minutes": "5 n tusdidin",
+          "30_minutes": "30 n tusdidin",
+          "1_hour": "1 tsragt",
+          "6_hours": "6 tsragin",
+          "1_day": "1 wass",
+          "3_days": "3 wussan",
+          "7_days": "7 wussan"
+        }
+      }
+    },
+    "jump": {
+      "jump_to": "Ddu ɣer..."
+    },
+    "add_list_member": {
+      "title": "Rnu agmam ɣer useddi",
+      "account_name": "Isem n umiḍan"
+    },
+    "list_membership": {
+      "title": "Aseddi n igmamen"
+    },
+    "mute_confirm": {
+      "title": "Is nit trid ad tẓẓiẓend?",
+      "body": "Ffer tineɣmisin seg unessmres-a?",
+      "cancel": "Sser",
+      "ok": "Ẓẓiẓen"
+    },
+    "shortcut": {
+      "title": "Keyboard shortcuts",
+      "ctrl_number": "Switch accounts",
+      "ctrl_k": "Ddu ɣer ifiliten n uzmez yaḍnin",
+      "ctrl_n": "Open the new toot modal",
+      "ctrl_enter": "Fser Ansaɣ",
+      "ctrl_r": "Reload current timeline",
+      "j": "Select the next toot",
+      "k": "Sty Ansaɣ ameggaru",
+      "h": "Switch focus to the left column",
+      "l": "Switch focus to the right column",
+      "r": "Rar i unsaɣ",
+      "b": "Reblog the toot",
+      "f": "Favourite the toot",
+      "o": "Open details of the toot",
+      "p": "Ṛẓem ifres n unsaɣ",
+      "i": "Ṛẓem tiwlafin",
+      "x": "Sken/ffer CW d NSFW",
+      "?": "Smal tiwisi",
+      "esc": "Rgel tasna tamirant"
+    },
+    "report": {
+      "title": "Amelli n unessmres-a",
+      "comment": "Additional comments",
+      "cancel": "Sser",
+      "ok": "Mel"
+    }
+  },
+  "cards": {
+    "toot": {
+      "show_more": "Smal uggar",
+      "hide": "Ffer",
+      "sensitive": "Show sensitive content",
+      "view_toot_detail": "View Toot Detail",
+      "open_in_browser": "Ṛṛem g umessara",
+      "copy_link_to_toot": "Senɣel asɣen n unsaɣ",
+      "mute": "Ẓẓiẓen",
+      "block": "Gdel",
+      "report": "Mel",
+      "delete": "Kkes",
+      "via": "sɣur {{application}}",
+      "reply": "Rar",
+      "reblog": "Reblog",
+      "fav": "Favourite",
+      "detail": "Toot details",
+      "bookmark": "Bookmark",
+      "pinned": "Ansaɣ iɣnsen",
+      "poll": {
+        "vote": "Asettay",
+        "votes_count": "isettayen",
+        "until": "ar {{datetime}}",
+        "left": "{{datetime}} ag qimen",
+        "refresh": "Zzuzwu"
+      }
+    }
+  },
+  "side_bar": {
+    "account_profile": {
+      "follows_you": "Iḍffer-k",
+      "doesnt_follow_you": "Ur-k iḍffeṛ",
+      "detail": "Detail",
+      "follow": "Ḍfeṛ",
+      "unfollow": "Kkes aḍfaṛ",
+      "follow_requested": "Ḍfeṛ tutrawin",
+      "open_in_browser": "Ṛẓem g umessara",
+      "manage_list_memberships": "Manage List Memberships",
+      "mute": "Ẓẓiẓen",
+      "unmute": "Kkes aẓiẓen",
+      "unblock": "Kkes ageddul",
+      "block": "Gdel",
+      "toots": "Ansaɣen",
+      "follows": "Imeḍfaṛ",
+      "followers": "Imeḍfaṛen"
+    }
+  },
+  "follow_requests": {
+    "accept": "Ḍeggi",
+    "reject": "Agy"
+  },
+  "hashtag": {
+    "tag_name": "Isem n waṭag",
+    "delete_tag": "Kkes aṭag",
+    "save_tag": "Ḥḍu aṭag"
+  },
+  "search": {
+    "search": "Rzu",
+    "account": "Amiḍan",
+    "tag": "Hacṭag",
+    "keyword": "keyword",
+    "toot": "Ansaɣ"
+  },
+  "lists": {
+    "index": {
+      "new_list": "Aseddi amaynu",
+      "edit": "Senfel"
+    }
+  },
+  "login": {
+    "domain_name_label": "Tazwuri, kcem ɣer umkkay n Mastodon. Mek tufid skcem isem n yiger n umekkay.",
+    "proxy_info": "Mek txsed ad tssmrsed amakkay n upṛuksi, mek tufid msel apṛksi-nnek g",
+    "proxy_here": " da",
+    "search": "Rzu",
+    "login": "Akcam"
+  },
+  "authorize": {
+    "manually_1": "Tettuṛẓem yat n tasna n usurg g umssara-nnek.",
+    "manually_2": "Mek ur tṛẓim, mek tufid ddu ɣer URL-a.",
+    "code_label": "Mek tufid sleɣ tangalt n usurg seg umssara-nnek:",
+    "misskey_label": "Mek tufid azen-tt adday tssurged g umssara-nnek.",
+    "submit": "Azen"
+  },
+  "receive_drop": {
+    "drop_message": "Ger i usali ɣer Mastodon"
+  },
+  "message": {
+    "account_load_error": "Azgel g usali n imiḍanen",
+    "account_remove_error": "Azgel g usitey n imiḍanen",
+    "preferences_load_error": "Failed to load preferences",
+    "timeline_fetch_error": "Failed to fetch timeline",
+    "notification_fetch_error": "Failed to fetch notification",
+    "favourite_fetch_error": "Failed to fetch favorite",
+    "follow_request_accept_error": "Azgel n udggi n tutrawin",
+    "follow_reuqest_reject_error": "azgel g waggeyn tutrawin",
+    "start_streaming_error": "Failed to start streaming",
+    "start_all_streamings_error": "Failed to start streaming of {{domain}}",
+    "attach_error": "Could not attach the file",
+    "authorize_duplicate_error": "Ur tzmmared ad kcemd s imiḍanen imsasan g igran imsasan",
+    "authorize_error": "Azgel g usureg",
+    "followers_fetch_error": "Failed to fetch followers",
+    "follows_fetch_error": "Failed to fetch follows",
+    "toot_fetch_error": "Failed to fetch the toot detail",
+    "follow_error": "Azgel g uḍfaṛ n unessmres",
+    "unfollow_error": "Azgel g tukksa n uḍfaṛ n unessmres",
+    "lists_fetch_error": "Failed to fetch lists",
+    "list_create_error": "Failed to create a list",
+    "members_fetch_error": "Failed to fetch members",
+    "remove_user_error": "Azgel g usitey n unessmres",
+    "find_account_error": "Ur ittwafa umiḍam",
+    "reblog_error": "Failed to reblog",
+    "unreblog_error": "Failed to unreblog",
+    "favourite_error": "Failed to favourite",
+    "unfavourite_error": "Failed to unfavourite",
+    "bookmark_error": "Failed to bookmark",
+    "unbookmark_error": "Failed to remove bookmark",
+    "delete_error": "Failed to delete the toot",
+    "search_error": "Failed to search",
+    "toot_error": "Failed to toot",
+    "update_list_memberships_error": "Failed to update the list memberships",
+    "add_user_error": "Azgel g urnnu n unessmres",
+    "authorize_url_error": "Failed to get authorize url",
+    "domain_confirmed": "{{domain}} is confirmed, please login",
+    "domain_doesnt_exist": "Azgel g uzday ɣer {{domain}}, sɣzen URL n umkkay",
+    "loading": "Azdam..."
+  },
+  "validation": {
+    "login": {
+      "require_domain_name": "A domain name is required",
+      "domain_format": "Please only enter the domain name"
+    },
+    "new_toot": {
+      "toot_length": "Ixeṣ ad tili tiɣzi seg {{min}} ar {{max}}",
+      "attach_length": "Tzmred ɣas ad teqqned ar {{max}} twelafin",
+      "attach_image": "Tzmerd ɣas ad teqqned tiwlafin neɣ ividyuten",
+      "poll_invalid": "Invalid poll choices"
+    }
+  },
+  "notification": {
+    "favourite": {
+      "title": "Favourite",
+      "body": "{{username}} favourited your status"
+    },
+    "follow": {
+      "title": "Ḍfeṛ",
+      "body": "la-k iḍffeṛ {{username}}"
+    },
+    "follow_request": {
+      "title": "Tuttra n uḍfaṛ",
+      "body": "Tiwḍ-ak tutra n uḍfaṛ seg {{username}}"
+    },
+    "reblog": {
+      "title": "Reblog",
+      "body": "{{username}} boosted your status"
+    },
+    "quote": {
+      "title": "Bder",
+      "body": "Ibder {{username}} ɣef wadda-nnek"
+    },
+    "reaction": {
+      "title": "Amyagga",
+      "body": "Imyagga {{username}} ɣef waddad-nnek"
+    }
+  }
+}
