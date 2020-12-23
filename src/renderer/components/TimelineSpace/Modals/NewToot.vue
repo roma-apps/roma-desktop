@@ -45,8 +45,7 @@
           :placeholder="$t('modals.new_toot.description')"
           :value="mediaDescriptions[media.id]"
           @input="updateDescription(media.id, $event.target.value)"
-          v-shortkey="{ left: ['arrowleft'], right: ['arrowright'] }"
-          @shortkey="handleDescriptionKey"
+          v-shortkey.avoid
           role="textbox"
           contenteditable="true"
           aria-multiline="true"
@@ -388,19 +387,6 @@ export default {
           .catch(_ => {})
       }
     },
-    handleDescriptionKey(event) {
-      const current = event.target.selectionStart
-      switch (event.srcKey) {
-        case 'left':
-          event.target.setSelectionRange(current - 1, current - 1)
-          break
-        case 'right':
-          event.target.setSelectionRange(current + 1, current + 1)
-          break
-        default:
-          return true
-      }
-    },
     updateDescription(id, value) {
       this.$store.commit('TimelineSpace/Modals/NewToot/updateMediaDescription', { id: id, description: value })
     },
@@ -421,11 +407,17 @@ export default {
         this.statusHeight = this.statusHeight + previousHeight
       }
     },
-    addPoll() {
-      this.polls.push('')
+    async addPoll() {
+      const previousPollHeight = this.$refs.poll.$el.offsetHeight
+      await this.polls.push('')
+      const diff = this.$refs.poll.$el.offsetHeight - previousPollHeight
+      this.statusHeight = this.statusHeight - diff
     },
-    removePoll(id) {
-      this.polls.splice(id, 1)
+    async removePoll(id) {
+      const previousPollHeight = this.$refs.poll.$el.offsetHeight
+      await this.polls.splice(id, 1)
+      const diff = previousPollHeight - this.$refs.poll.$el.offsetHeight
+      this.statusHeight = this.statusHeight + diff
     },
     changeExpire(obj) {
       this.pollExpire = obj
