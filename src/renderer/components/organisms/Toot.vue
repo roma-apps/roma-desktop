@@ -25,9 +25,7 @@
     role="article"
     aria-label="toot"
   >
-    <div v-show="filtered" class="filtered">
-      Filtered
-    </div>
+    <div v-show="filtered" class="filtered">Filtered</div>
     <div v-show="!filtered" class="toot">
       <div class="icon" role="presentation">
         <FailoverImg
@@ -133,7 +131,7 @@
             >
           </template>
         </div>
-        <div class="tool-box" v-click-outside="hideEmojiPicker">
+        <div class="tool-box">
           <el-button type="text" @click="openReply()" class="reply" :title="$t('cards.toot.reply')" :aria-label="$t('cards.toot.reply')">
             <icon name="reply" scale="0.9"></icon>
           </el-button>
@@ -181,11 +179,17 @@
             <icon name="quote-right" scale="0.9"></icon>
           </el-button>
           <template v-if="sns !== 'mastodon'">
-            <el-button class="emoji" type="text" @click="toggleEmojiPicker">
-              <icon name="regular/smile" scale="0.9"></icon>
-            </el-button>
-            <div v-if="openEmojiPicker" class="emoji-picker">
+            <el-popover
+              placement="bottom"
+              width="281"
+              trigger="click"
+              popper-class="status-emoji-picker"
+              ref="status_emoji_picker"
+              @show="openPicker"
+              @hide="hidePicker"
+            >
               <picker
+                v-if="openEmojiPicker"
                 set="emojione"
                 :autoFocus="true"
                 @select="selectEmoji"
@@ -195,41 +199,50 @@
                 :showPreview="false"
                 :emojiTooltip="true"
               />
-            </div>
+              <el-button slot="reference" class="emoji" type="text">
+                <icon name="regular/smile" scale="0.9"></icon>
+              </el-button>
+            </el-popover>
           </template>
           <el-button class="pinned" type="text" :title="$t('cards.toot.pinned')" :aria-label="$t('cards.toot.pinned')" v-show="pinned">
             <icon name="thumbtack" scale="0.9"></icon>
           </el-button>
-          <popper trigger="click" :options="{ placement: 'bottom' }" ref="popper">
-            <div class="popper toot-menu">
-              <ul class="menu-list">
-                <li role="button" @click="openDetail(message)" v-show="!detailed">
-                  {{ $t('cards.toot.view_toot_detail') }}
-                </li>
-                <li role="button" @click="openBrowser(originalMessage)">
-                  {{ $t('cards.toot.open_in_browser') }}
-                </li>
-                <li role="button" @click="copyLink(originalMessage)">
-                  {{ $t('cards.toot.copy_link_to_toot') }}
-                </li>
-                <li role="button" class="separate" @click="confirmMute()">
-                  {{ $t('cards.toot.mute') }}
-                </li>
-                <li role="button" @click="block()">
-                  {{ $t('cards.toot.block') }}
-                </li>
-                <li role="button" @click="reportUser()" v-if="!isMyMessage">
-                  {{ $t('cards.toot.report') }}
-                </li>
-                <li role="button" class="separate" @click="deleteToot(message)" v-if="isMyMessage">
-                  {{ $t('cards.toot.delete') }}
-                </li>
-              </ul>
-            </div>
+          <el-popover
+            placement="bottom"
+            width="200"
+            trigger="click"
+            popper-class="status-menu-popper"
+            ref="status_menu_popper"
+            @show="openMenu"
+            @hide="hideMenu"
+          >
+            <ul class="menu-list" v-if="openToolMenu">
+              <li role="button" @click="openDetail(message)" v-show="!detailed">
+                {{ $t('cards.toot.view_toot_detail') }}
+              </li>
+              <li role="button" @click="openBrowser(originalMessage)">
+                {{ $t('cards.toot.open_in_browser') }}
+              </li>
+              <li role="button" @click="copyLink(originalMessage)">
+                {{ $t('cards.toot.copy_link_to_toot') }}
+              </li>
+              <li role="button" class="separate" @click="confirmMute()">
+                {{ $t('cards.toot.mute') }}
+              </li>
+              <li role="button" @click="block()">
+                {{ $t('cards.toot.block') }}
+              </li>
+              <li role="button" @click="reportUser()" v-if="!isMyMessage">
+                {{ $t('cards.toot.report') }}
+              </li>
+              <li role="button" class="separate" @click="deleteToot(message)" v-if="isMyMessage">
+                {{ $t('cards.toot.delete') }}
+              </li>
+            </ul>
             <el-button slot="reference" type="text" :title="$t('cards.toot.detail')">
               <icon name="ellipsis-h" scale="0.9"></icon>
             </el-button>
-          </popper>
+          </el-popover>
         </div>
         <div class="application" v-show="application !== null">
           {{ $t('cards.toot.via', { application: application }) }}
@@ -275,8 +288,8 @@ export default {
       showAttachments: this.$store.state.App.ignoreNFSW,
       hideAllAttachments: this.$store.state.App.hideAllAttachments,
       now: Date.now(),
-      pollResponse: null,
-      openEmojiPicker: false
+      openEmojiPicker: false,
+      openToolMenu: false
     }
   },
   props: {
@@ -367,11 +380,7 @@ export default {
       return !this.spoilered || this.showContent
     },
     poll: function () {
-      if (this.pollResponse) {
-        return this.pollResponse
-      } else {
-        return this.originalMessage.poll
-      }
+      return this.originalMessage.poll
     },
     sensitive: function () {
       return (this.hideAllAttachments || this.originalMessage.sensitive) && this.mediaAttachments.length > 0
@@ -494,28 +503,28 @@ export default {
       this.$store.dispatch('TimelineSpace/Contents/SideBar/openTootComponent')
       this.$store.dispatch('TimelineSpace/Contents/SideBar/TootDetail/changeToot', message)
       this.$store.commit('TimelineSpace/Contents/SideBar/changeOpenSideBar', true)
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     openBrowser(message) {
       window.shell.openExternal(message.url)
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     copyLink(message) {
       window.clipboard.writeText(message.url, 'toot-link')
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     reportUser() {
       this.$store.dispatch('TimelineSpace/Modals/Report/openReport', this.originalMessage)
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     confirmMute() {
       this.$store.dispatch('TimelineSpace/Modals/MuteConfirm/changeAccount', this.originalMessage.account)
       this.$store.dispatch('TimelineSpace/Modals/MuteConfirm/changeModal', true)
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     block() {
       this.$store.dispatch('organisms/Toot/block', this.originalMessage.account)
-      this.$refs.popper.doClose()
+      this.$refs.status_menu_popper.doClose()
     },
     changeReblog(message) {
       if (message.reblogged) {
@@ -684,17 +693,17 @@ export default {
         id: this.poll.id,
         choices: choices
       })
-      this.pollResponse = res
+      const status = Object.assign({}, this.originalMessage, {
+        poll: res
+      })
+      this.$emit('update', status)
     },
     async refresh(id) {
       const res = await this.$store.dispatch('organisms/Toot/refresh', id)
-      this.pollResponse = res
-    },
-    toggleEmojiPicker() {
-      this.openEmojiPicker = !this.openEmojiPicker
-    },
-    hideEmojiPicker() {
-      this.openEmojiPicker = false
+      const status = Object.assign({}, this.originalMessage, {
+        poll: res
+      })
+      this.$emit('update', status)
     },
     async selectEmoji(emoji) {
       const status = await this.$store.dispatch('organisms/Toot/sendReaction', {
@@ -702,7 +711,7 @@ export default {
         native: emoji.native
       })
       this.$emit('update', status)
-      this.hideEmojiPicker()
+      this.$refs.status_emoji_picker.doClose()
     },
     async addReaction(native) {
       const status = await this.$store.dispatch('organisms/Toot/sendReaction', {
@@ -720,6 +729,18 @@ export default {
     },
     openQuote() {
       this.$store.dispatch('TimelineSpace/Modals/NewToot/openQuote', this.originalMessage)
+    },
+    openPicker() {
+      this.openEmojiPicker = true
+    },
+    hidePicker() {
+      this.openEmojiPicker = false
+    },
+    openMenu() {
+      this.openToolMenu = true
+    },
+    hideMenu() {
+      this.openToolMenu = false
     }
   }
 }
@@ -950,38 +971,6 @@ export default {
       .pinned {
         color: gold;
       }
-
-      .toot-menu {
-        padding: 2px 0;
-        border-color: #909399;
-
-        .menu-list {
-          padding: 0;
-          margin: 4px 0;
-          font-size: 0.9rem;
-          list-style-type: none;
-          line-height: 32px;
-          text-align: left;
-          color: #303133;
-
-          li {
-            box-sizing: border-box;
-            padding: 0 32px 0 16px;
-
-            &:hover {
-              background-color: #409eff;
-              color: #fff;
-              cursor: pointer;
-            }
-
-            &.separate {
-              border-top: 1px solid var(--theme-border-color);
-              padding-top: 4px;
-              margin-top: 2px;
-            }
-          }
-        }
-      }
     }
 
     .application {
@@ -1023,5 +1012,44 @@ export default {
   height: 1px;
   background-color: var(--theme-border-color);
   margin: 4px 0 0;
+}
+</style>
+
+<style lang="scss">
+.status-menu-popper {
+  padding: 2px 0;
+  border-color: #909399;
+
+  .menu-list {
+    padding: 0;
+    margin: 4px 0;
+    font-size: 0.9rem;
+    list-style-type: none;
+    line-height: 32px;
+    text-align: left;
+    color: #303133;
+
+    li {
+      box-sizing: border-box;
+      padding: 0 32px 0 16px;
+
+      &:hover {
+        background-color: #409eff;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      &.separate {
+        border-top: 1px solid var(--theme-border-color);
+        padding-top: 4px;
+        margin-top: 2px;
+      }
+    }
+  }
+}
+
+.status-emoji-picker {
+  padding: 0;
+  border: none;
 }
 </style>
