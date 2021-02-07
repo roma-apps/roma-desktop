@@ -31,6 +31,10 @@ export default {
     name: '简体中文',
     key: 'zh_cn'
   },
+  zh_tw: {
+    name: '繁體中文',
+    key: 'zh_tw'
+  },
   cs: {
     name: 'čeština',
     key: 'cs'
@@ -50,6 +54,10 @@ export default {
   ru: {
     name: 'русский',
     key: 'ru'
+  },
+  si: {
+    name: 'සිංහල',
+    key: 'si'
   },
   sv_se: {
     name: 'svenska',
