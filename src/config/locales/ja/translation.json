@@ -94,6 +94,7 @@
         "title": "投稿",
         "visibility": {
           "description": "ステータスの公開設定を変更する",
+          "notice": "この設定は新しいステータスのみに適用され、返信は元のステータスの公開設定に従います",
           "public": "公開",
           "unlisted": "未収載",
           "private": "フォロワー限定",
@@ -134,7 +135,17 @@
       },
       "other": {
         "title": "その他",
-        "launch": "ログイン時にアプリを起動する"
+        "launch": "ログイン時にアプリを起動する",
+        "spellcheck": {
+          "description": "スペルチェッカーを有効にする",
+          "notice": "再起動が必要です",
+          "confirm": {
+            "title": "確認",
+            "message": "設定を有効化するために再起動する必要があります",
+            "ok": "再起動する",
+            "cancel": "キャンセル"
+          }
+        }
       }
     },
     "appearance": {
@@ -227,7 +238,7 @@
       "language_description": "Romaの表示言語を選択",
       "notice": "再起動が必要です",
       "confirm": {
-        "title": "再起動します",
+        "title": "確認",
         "message": "設定を有効化するために再起動する必要があります",
         "ok": "再起動する",
         "cancel": "キャンセル"
@@ -376,7 +387,15 @@
   "lists": {
     "index": {
       "new_list": "新規リスト",
-      "edit": "編集"
+      "edit": "編集",
+      "delete": {
+        "confirm": {
+          "title": "確認",
+          "message": "この操作は元に戻すことができません。このリストを完全に削除しますか？",
+          "ok": "削除する",
+          "cancel": "キャンセル"
+        }
+      }
     }
   },
   "login": {

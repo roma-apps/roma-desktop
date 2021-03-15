@@ -354,11 +354,18 @@ export default {
         .then(() => {
           this.statusHeight = this.statusHeight - this.$refs.preview.offsetHeight
         })
-        .catch(() => {
-          this.$message({
-            message: this.$t('message.attach_error'),
-            type: 'error'
-          })
+        .catch(err => {
+          if (err instanceof NewTootAttachLength) {
+            this.$message({
+              message: this.$t('validation.new_toot.attach_length', { max: 4 }),
+              type: 'error'
+            })
+          } else {
+            this.$message({
+              message: this.$t('message.attach_error'),
+              type: 'error'
+            })
+          }
         })
     },
     removeAttachment(media) {
@@ -513,7 +520,7 @@ export default {
       .image-wrapper {
         position: relative;
         flex: 1 1 0;
-        min-width: 40%;
+        min-width: 10%;
         height: 150px;
         margin: 4px;
 

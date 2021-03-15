@@ -94,6 +94,7 @@
         "title": "Wpisy",
         "visibility": {
           "description": "Dostosuj domyślną widoczność swoich postów.",
+          "notice": "This setting applies to only new toots, replies follow visibility of original toots",
           "public": "Publiczne",
           "unlisted": "Niewidoczne",
           "private": "Prywatne",
@@ -134,7 +135,17 @@
       },
       "other": {
         "title": "Other options",
-        "launch": "Launch app on login"
+        "launch": "Launch app on login",
+        "spellcheck": {
+          "description": "Enable spellchecker",
+          "notice": "Requires relaunch",
+          "confirm": {
+            "title": "Confirm",
+            "message": "You have to restart this application. Continue?",
+            "ok": "Restart Now",
+            "cancel": "Cancel"
+          }
+        }
       }
     },
     "appearance": {
@@ -227,7 +238,7 @@
       "language_description": "Choose the language you would like to use with Roma.",
       "notice": "Wymaga ponownego uruchomienia",
       "confirm": {
-        "title": "Ostrzeżenie",
+        "title": "Confirm",
         "message": "Musisz uruchomić aplikację ponownie. Czy chcesz kontynuować?",
         "ok": "Uruchom ponownie",
         "cancel": "Anuluj"
@@ -376,7 +387,15 @@
   "lists": {
     "index": {
       "new_list": "Nowa lista",
-      "edit": "Edytuj"
+      "edit": "Edytuj",
+      "delete": {
+        "confirm": {
+          "title": "Confirm",
+          "message": "This operation can not be undone, this list will be permanently deleted",
+          "ok": "Delete",
+          "cancel": "Cancel"
+        }
+      }
     }
   },
   "login": {
