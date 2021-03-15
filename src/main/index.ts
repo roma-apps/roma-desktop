@@ -28,6 +28,7 @@ import openAboutWindow from 'about-window'
 import { Entity, detector } from 'megalodon'
 import sanitizeHtml from 'sanitize-html'
 import AutoLaunch from 'auto-launch'
+import minimist from 'minimist'
 
 import pkg from '~/package.json'
 import Authentication from './auth'
@@ -200,6 +201,16 @@ async function getLanguage() {
   }
 }
 
+const getSpellChecker = async (): Promise<boolean> => {
+  try {
+    const preferences = new Preferences(preferencesDBPath)
+    const conf = await preferences.load()
+    return conf.general.other.spellcheck
+  } catch (err) {
+    return true
+  }
+}
+
 const getMenuPreferences = async (): Promise<MenuPreferences> => {
   const preferences = new Preferences(preferencesDBPath)
   const conf = await preferences.load()
@@ -224,6 +235,11 @@ async function createWindow() {
    */
   const language = await getLanguage()
   i18next.changeLanguage(language)
+
+  /**
+   * Get spellcheck
+   */
+  const spellcheck = await getSpellChecker()
 
   /**
    * Load system theme color for dark mode
@@ -283,7 +299,7 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.resolve(__dirname, './preload.js'),
-      spellcheck: true
+      spellcheck: spellcheck
     }
   }
   const config: Config = {
@@ -318,10 +334,6 @@ async function createWindow() {
 
   mainWindow.webContents.on('will-navigate', event => event.preventDefault())
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-
   // Show tray icon only linux and windows.
   if (process.platform !== 'darwin') {
     // Show tray icon
@@ -342,12 +354,31 @@ async function createWindow() {
     })
 
     // Minimize to tray
-    mainWindow!.on('close', event => {
+    mainWindow.on('close', event => {
       mainWindow!.hide()
       mainWindow!.setSkipTaskbar(true)
       event.preventDefault()
     })
+  } else {
+    mainWindow.on('closed', () => {
+      mainWindow = null
+    })
   }
+}
+
+// Parse command line arguments and show help command.
+const args = minimist(process.argv.slice(process.env.NODE_ENV === 'development' ? 2 : 1))
+if (args.help) {
+  console.log(`
+Whalebird is Mastodon, Pleroma and Misskey client for desktop.
+
+Usage
+ $ whalebird
+
+Options
+ --help    show help
+`)
+  process.exit(0)
 }
 
 // Do not lower the rendering priority of Chromium when background
@@ -907,7 +938,9 @@ ipcMain.handle('get-preferences', async (_: IpcMainInvokeEvent) => {
   await preferences
     .update({
       general: {
-        other: enabled
+        other: {
+          launch: enabled
+        }
       }
     })
     .catch(err => console.error(err))
@@ -1130,6 +1163,25 @@ const ApplicationMenu = (accountsChange: Array<MenuItemConstructorOptions>, menu
           }
         ]
 
+  const applicationQuitMenu: Array<MenuItemConstructorOptions> =
+    process.platform === 'darwin'
+      ? [
+          {
+            label: i18n.t('main_menu.application.quit'),
+            accelerator: 'CmdOrCtrl+Q',
+            role: 'quit'
+          }
+        ]
+      : [
+          {
+            label: i18n.t('main_menu.application.quit'),
+            accelerator: 'CmdOrCtrl+Q',
+            click: () => {
+              mainWindow!.destroy()
+            }
+          }
+        ]
+
   const template: Array<MenuItemConstructorOptions> = [
     {
       label: i18n.t('main_menu.application.name'),
@@ -1160,11 +1212,7 @@ const ApplicationMenu = (accountsChange: Array<MenuItemConstructorOptions>, menu
         {
           type: 'separator'
         },
-        {
-          label: i18n.t('main_menu.application.quit'),
-          accelerator: 'CmdOrCtrl+Q',
-          role: 'quit'
-        }
+        ...applicationQuitMenu
       ]
     },
     {

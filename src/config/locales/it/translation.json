@@ -93,7 +93,8 @@
       "toot": {
         "title": "Toot",
         "visibility": {
-          "description": "Personalizza visibilità di default dei toot.",
+          "description": "Customize default visibility of toot",
+          "notice": "This setting applies to only new toots, replies follow visibility of original toots",
           "public": "Pubblico",
           "unlisted": "Non elencato",
           "private": "Privato",
@@ -134,7 +135,17 @@
       },
       "other": {
         "title": "Altre opzioni",
-        "launch": "Avvia l'app al login"
+        "launch": "Avvia l'app al login",
+        "spellcheck": {
+          "description": "Enable spellchecker",
+          "notice": "Requires relaunch",
+          "confirm": {
+            "title": "Confirm",
+            "message": "You have to restart this application. Continue?",
+            "ok": "Restart Now",
+            "cancel": "Cancel"
+          }
+        }
       }
     },
     "appearance": {
@@ -227,7 +238,7 @@
       "language_description": "Scegli la lingua che desideri utilizzare con Roma.",
       "notice": "Richiede il riavvio",
       "confirm": {
-        "title": "Avviso",
+        "title": "Confirm",
         "message": "Devi riavviare questa applicazione. Continua?",
         "ok": "Riavvia Adesso",
         "cancel": "Annulla"
@@ -376,7 +387,15 @@
   "lists": {
     "index": {
       "new_list": "Nuova Lista",
-      "edit": "Modifica"
+      "edit": "Modifica",
+      "delete": {
+        "confirm": {
+          "title": "Confirm",
+          "message": "This operation can not be undone, this list will be permanently deleted",
+          "ok": "Delete",
+          "cancel": "Cancel"
+        }
+      }
     }
   },
   "login": {
